@@ -3,7 +3,9 @@ Sinatra-DataMapper-Sqlite-MySQL-Hosted-Capistrano
 
 Example Sinatra app using Sqlite development, MySQL production deployed to a hosted server via capistrano
 
-To run, do a bundle install.
+To run, do:
+
+    bundle install
 
 Then simply type:
 
@@ -12,6 +14,42 @@ Then simply type:
 For testing production, simply use:
 
     RACKUP_ENV=production rackup
+
+For reference purposes the output of 'bundle show' is as follows:
+
+    Gems included by the bundle:
+      * addressable (2.2.8)
+      * bcrypt-ruby (3.0.1)
+      * bundler (1.3.5)
+      * data_mapper (1.2.0)
+      * data_objects (0.10.12)
+      * dm-aggregates (1.2.0)
+      * dm-constraints (1.2.0)
+      * dm-core (1.2.0)
+      * dm-do-adapter (1.2.0)
+      * dm-migrations (1.2.0)
+      * dm-mysql-adapter (1.2.0)
+      * dm-serializer (1.2.2)
+      * dm-sqlite-adapter (1.2.0)
+      * dm-timestamps (1.2.0)
+      * dm-transactions (1.2.0)
+      * dm-types (1.2.2)
+      * dm-validations (1.2.0)
+      * do_mysql (0.10.12)
+      * do_sqlite3 (0.10.12)
+      * fastercsv (1.5.5)
+      * json (1.8.0)
+      * json_pure (1.8.0)
+      * log4r (1.1.10)
+      * multi_json (1.7.4)
+      * mysql (2.9.1)
+      * rack (1.5.2)
+      * rack-protection (1.5.0)
+      * sinatra (1.4.2)
+      * sqlite3 (1.3.7)
+      * stringex (1.5.1)
+      * tilt (1.4.1)
+      * uuidtools (2.1.4)
 
 The system does not install the database rows by default.
 You can cause this by making a call to http://whatever.com/idl/SEED_SECRET
