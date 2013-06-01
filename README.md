@@ -82,6 +82,47 @@ Which will obviously have to be changed to use your dbname, user and pass.
 
 Once that has been done, you'll probably be using either Apache2 or NGinx as a server.
 Under passenger presumably.
+That is not covered here as if you're histing your own server, you will have created VHosts configurations for sites before.
+For the sake of... of... well just because I know I'll get asked... I have included an example Apache2 VHost config here:
+
+```sh
+[/etc/apache2/sites-available/yoursite.com]
+<VirtualHost *:80>
+  ServerAdmin     your.name@some.email.service.com
+  ServerName      www.your-app-name.com
+  ServerAlias     sdshmc.your-app-name.com
+  ServerSignature Off
+  DocumentRoot    /home/some_user/sdshmc/site
+  LogLevel        warn
+  ErrorLog        /home/some_user/sdshmc/logs/error.log
+  CustomLog       /home/some_user/sdshmc/logs/access.log combined
+  ScriptAlias     /cgi-bin/ /usr/lib/cgi-bin/
+  <Directory /home/some_user/sdshmc/site/>
+    Options       Indexes FollowSymLinks MultiViews
+    AllowOverride All
+    Order         Deny,Allow
+    # And your 'allows' here:
+    Allow         From 1.2.3.4
+  </Directory>
+</VirtualHost>
+```
+
+For the sake of completeness:
+
+    [/etc/apache2/mods-available/passenger.conf]
+    PassengerRoot /opt/ruby-2.0.0-p195/lib/ruby/gems/2.0.0/gems/passenger-4.0.2
+    PassengerRuby /opt/ruby-2.0.0-p195/bin/ruby
+    PassengerDefaultRuby /opt/ruby-2.0.0-p195/bin/ruby
+    PassengerMaxPoolSize 6
+    PassengerPoolIdleTime 0
+    PassengerMaxRequests 1000
+
+and
+
+    [/etc/apache2/mods-available/passenger.load]
+    LoadModule passenger_module /opt/ruby-2.0.0-p195/lib/ruby/gems/2.0.0/gems/passenger-4.0.2/libout/apache2/mod_passenger.so
+
+OBVIOUSLY you'll want to change the path to the gems and ruby2!
 
 NOTICE:
 -------
