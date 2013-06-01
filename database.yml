@@ -1,0 +1,28 @@
+
+# -----------------------------------------------------------------------
+# Development uses sqlite3 database
+# -----------------------------------------------------------------------
+development:
+  adapter: sqlite3
+  encoding: utf8
+  database: db/development.db
+
+# -----------------------------------------------------------------------
+# Development uses sqlite3 database
+# -----------------------------------------------------------------------
+test:
+  adapter: sqlite3
+  encoding: utf8
+  database: db/test.db
+
+# -----------------------------------------------------------------------
+# Development uses mysql database
+# You'll have to create the database and set the user/pass combo!
+# I'm using the initial letters of the project for that and the db name
+# -----------------------------------------------------------------------
+production:
+  adapter: mysql
+  encoding: utf8
+  username: sdshmc
+  password: sdshmc
+  database: sdshmc
