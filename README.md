@@ -1,5 +1,4 @@
-Sinatra-DataMapper-Sqlite-MySQL-Hosted-Capistrano
-=================================================
+# Sinatra-DataMapper-Sqlite-MySQL-Hosted-Capistrano
 
 Example Sinatra app using Sqlite development, MySQL production deployed to a hosted server via capistrano
 
@@ -60,12 +59,29 @@ For reference purposes the output of `bundle show` is as follows:
 The system does not install the database rows by default.
 You can cause this by making a call to http://whatever.com/idl/SEED_SECRET
 Obviously this is FAR from secure, and is shown simply to illustrate the point.
-The seed data itself is in the seed_data folder.
+The seed data itself is in the `seed_data` folder.
 Be aware that the `IpToCountry.2013-05.27.csv` is huge.
 It was drawn down from http://software77.net/geo-ip and massaged to create the `addresses.csv` and `countries.csv`.
 In that folder is an example shell script to create new csv files based on a new original file.
 
 I strongly suggest reading the application.rb file as it is chock full of comments.
+
+## Production
+
+Since this example assumes MySQL in production you will have to create the database itself.
+In the `database.yml`, you'll see:
+
+    production:
+      adapter: mysql
+      encoding: utf8
+      username: sdshmc
+      password: sdshmc
+      database: sdshmc
+
+Which will obviously have to be changed to use your dbname, user and pass.
+
+Once that has been done, you'll probably be using either Apache2 or NGinx as a server.
+Under passenger presumably.
 
 NOTICE:
 -------
@@ -97,6 +113,9 @@ Having said that, setting the encoding to utf8, UTF8, utf-8 or UTF-8 causes:
 /Users/kim/.rvm/gems/ruby-2.0.0-p0/gems/data_objects-0.10.12/lib/data_objects/connection.rb:79: warning: Encoding utf8 is not a known Ruby encoding for MySQL
 ```
 
-This appears to be an issue with the DataMapper DataObject library that, when run, to attempt to require a mysql2 version of it's code.
+This appears to be an issue with the DataMapper DataObject library.
 Which of course does not exist.
 It's only a warning, but it disturbs me.
+
+If you try to use the mysql2 gem and adapter DataMapper barfs on the DataObject requires.
+When run, it attempts to require a mysql2 version of it's code.
