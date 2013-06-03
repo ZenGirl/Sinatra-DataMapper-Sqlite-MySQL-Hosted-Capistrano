@@ -289,24 +289,41 @@ For Apache2, this is done by creating a file in `/etc/apache2/sites-available` n
 In this case we're creating a site named `sdshmc.mydomain.com`, so the file will be `/etc/apache2/sites-available/sdshmc.mydomain.com`.
 I have included an example Apache2 VHost config here:
 
-    [/etc/apache2/sites-available/yoursite.com]
     <VirtualHost *:80>
       ServerAdmin     your.name@some.email.service.com
-      ServerName      www.your-app-name.com
-      ServerAlias     sdshmc.your-app-name.com
+
+      ServerName      sdshmc.mydomain.com
+      # If you want an alias for your site using CNAME for example, do womthing like this:
+      #ServerAlias     sdshmc.your-app-name.com
+
       ServerSignature Off
-      DocumentRoot    /home/some_user/sdshmc/site
+
+      # Points to your site files
+      # NOTE: You must have a public folder even if it's empty
+      DocumentRoot    /home/some_user/sdshmc/public
+
+      # Only interested in warnings and above
       LogLevel        warn
+
+      # For access and error logging
+      # Note that you'll have to ensure this folder is wriatble by www-data
       ErrorLog        /home/some_user/sdshmc/logs/error.log
       CustomLog       /home/some_user/sdshmc/logs/access.log combined
-      ScriptAlias     /cgi-bin/ /usr/lib/cgi-bin/
-      <Directory /home/some_user/sdshmc/site/>
+
+      # If you're using cgi-bin programs
+      #ScriptAlias     /cgi-bin/ /usr/lib/cgi-bin/
+
+      # The directory where the site is stored
+      # NOTE the trailing slash!
+      <Directory /home/some_user/sdshmc/public/>
         Options       Indexes FollowSymLinks MultiViews
         AllowOverride All
-        # We deny first, then allow
-        Order         Deny,Allow
-        # And your 'allows' here:
-        Allow         From 1.2.3.4
+        # We allow first, then deny
+        Order         Allow,Deny
+        # For security during testing, put your home IP address here
+        #Allow from    200.200.200.200
+        # Otherwise, use this:
+        Allow from     All
       </Directory>
     </VirtualHost>
 
