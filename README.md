@@ -423,11 +423,16 @@ Now a call to `http://sdshmc.mydomain.com/60.240.233.28/this_app/df76f1e54f63eae
 
 And a call to `http://sdshmc.mydomain.com/60.240.233.28/this_app/df76f1e54f63eae442ebf3b4d6c46531.xml` yields:
 
-    This XML file does not appear to have any style information associated with it. The document tree is shown below.
-    <response>
-      <iso3>AUS</iso3>
-      <country>Australia</country>
-    </response>
+```xml
+<response>
+  <iso3>AUS</iso3>
+  <country>Australia</country>
+</response>
+```
+
+In browsers you'll see this:
+
+        This XML file does not appear to have any style information associated with it. The document tree is shown below.
 
 The error is because we didn't include an `<xml .../>` header.
 
