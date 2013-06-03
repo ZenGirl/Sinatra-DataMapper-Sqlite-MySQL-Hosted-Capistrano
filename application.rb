@@ -116,7 +116,7 @@ end
 # START Database configuration
 # =========================================================================
 $log.info "Configuring DB for [#{settings.environment}]"
-db_config = YAML.load(File.read("#{settings.root}/database.yml"))
+db_config = YAML.load(File.read("#{settings.root}/config/database.yml"))
 # Just dump out the details for us to view
 $log.debug "Complete DB Config loaded: #{db_config.inspect}"
 # Notice the use of to_s to get the String of the environment and not a Symbol
@@ -130,11 +130,26 @@ DataMapper.setup(:default, db_config[settings.environment.to_s])
 # =========================================================================
 # START Model configuration
 # =========================================================================
-$log.debug 'Loading DataMapper models'
-require './models/ipv4'
-require './models/country'
-require './models/vendor'
 
+# -------------------------------------------------------------------------
+# Load the models first
+#
+# NOTE 1: See that I have capitalized the model names. In production,
+# passenger will sometimes get confused if you use the lowercase name
+# while Webrick or Thin will not.
+#
+# NOTE 2: You may need to have the full path as sometimes passenger will
+# yield errors like this:
+#   cannot load such file -- ./models/ipv4 (LoadError)
+# -------------------------------------------------------------------------
+$log.debug 'Loading DataMapper models'
+require './models/IPv4'
+require './models/Country'
+require './models/Vendor'
+
+# -------------------------------------------------------------------------
+# For DataMapper we need to finalize and upgrade
+# -------------------------------------------------------------------------
 DataMapper.finalize
 #DataMapper.auto_migrate! # Using this whacks the tables
 DataMapper.auto_upgrade! # Just updates existing tables
