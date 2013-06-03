@@ -103,14 +103,14 @@ and
 
 OBVIOUSLY you'll want to change the path to the gems and ruby2!
 
-You'll have to `a2enmod passenger` to create the links from /etc/apache2/mods-enabled to /etc/apache2/mods-available.
+You'll have to `a2enmod passenger` to create the links from `/etc/apache2/mods-enabled` to `/etc/apache2/mods-available`.
 After that, just restart Apache.
 
 ### DNS
 
 You can't make your site run properly (I'm excluding accessing it from an IP address) without a name.
 So access your DNS zone settings (netregistry or whatever) and ensure you have the A or CNAME records configured for that name.
-In the case of this application the name is sdshmc.mydomain.com and the record in netregistry looks like this:
+In the case of this application the name is `sdshmc.mydomain.com` and the record in DNS looks like this:
 
     sdshmc	3600	IN	A	192.168.170.115
 
@@ -204,6 +204,8 @@ Once you're done your folder, probably `/home/yourname/sdshmc` will look somethi
     │   ├── Country.rb
     │   ├── IPv4.rb
     │   └── Vendor.rb
+    ├── public
+    │   └── folder_must_exist
     ├── README.md
     └── seed_data
         ├── addresses.csv
@@ -219,56 +221,60 @@ Now there is an important step.
 You need to ensure your gems are installed.
 First check your ruby version is valid:
 
-    my_remote_name@my_remote_host:~/sdshmc$ export PATH=/opt/ruby-2.0.0-p195/bin:$PATH
-    my_remote_name@my_remote_host:~/sdshmc$ which ruby
-    /opt/ruby-2.0.0-p195/bin/ruby
-    my_remote_name@my_remote_host:~/sdshmc$ ruby -v
-    ruby 2.0.0p195 (2013-05-14 revision 40734) [x86_64-linux]
+```sh
+my_remote_name@my_remote_host:~/sdshmc$ export PATH=/opt/ruby-2.0.0-p195/bin:$PATH
+my_remote_name@my_remote_host:~/sdshmc$ which ruby
+/opt/ruby-2.0.0-p195/bin/ruby
+my_remote_name@my_remote_host:~/sdshmc$ ruby -v
+ruby 2.0.0p195 (2013-05-14 revision 40734) [x86_64-linux]
+```
 
 In my case I have a global install of ruby2.
 You might have an RVM version.
 Whatever.
 Now we do a bundle install:
 
-    my_remote_name@my_remote_host:~/sdshmc$ which bundle
-    /opt/ruby-2.0.0-p195/bin/bundle
-    my_remote_name@my_remote_host:~/sdshmc$ bundle install
-    Fetching gem metadata from https://rubygems.org/.........
-    Fetching gem metadata from https://rubygems.org/..
-    Installing addressable (2.2.8)
-    Installing bcrypt-ruby (3.0.1)
-    Installing dm-core (1.2.0)
-    Installing dm-aggregates (1.2.0)
-    Installing dm-constraints (1.2.0)
-    Installing dm-migrations (1.2.0)
-    Installing fastercsv (1.5.5)
-    Using json (1.8.0)
-    Installing json_pure (1.8.0)
-    Installing multi_json (1.7.4)
-    Installing dm-serializer (1.2.2)
-    Installing dm-timestamps (1.2.0)
-    Installing dm-transactions (1.2.0)
-    Installing stringex (1.5.1)
-    Installing uuidtools (2.1.4)
-    Installing dm-types (1.2.2)
-    Installing dm-validations (1.2.0)
-    Installing data_mapper (1.2.0)
-    Installing data_objects (0.10.12)
-    Installing dm-do-adapter (1.2.0)
-    Installing do_mysql (0.10.12)
-    Installing dm-mysql-adapter (1.2.0)
-    Installing do_sqlite3 (0.10.12)
-    Installing dm-sqlite-adapter (1.2.0)
-    Installing log4r (1.1.10)
-    Installing mysql (2.9.1)
-    Using rack (1.5.2)
-    Installing rack-protection (1.5.0)
-    Using tilt (1.4.1)
-    Installing sinatra (1.4.2)
-    Installing sqlite3 (1.3.7)
-    Using bundler (1.3.5)
-    Your bundle is complete!
-    Use `bundle show [gemname]` to see where a bundled gem is installed.
+```sh
+my_remote_name@my_remote_host:~/sdshmc$ which bundle
+/opt/ruby-2.0.0-p195/bin/bundle
+my_remote_name@my_remote_host:~/sdshmc$ bundle install
+Fetching gem metadata from https://rubygems.org/.........
+Fetching gem metadata from https://rubygems.org/..
+Installing addressable (2.2.8)
+Installing bcrypt-ruby (3.0.1)
+Installing dm-core (1.2.0)
+Installing dm-aggregates (1.2.0)
+Installing dm-constraints (1.2.0)
+Installing dm-migrations (1.2.0)
+Installing fastercsv (1.5.5)
+Using json (1.8.0)
+Installing json_pure (1.8.0)
+Installing multi_json (1.7.4)
+Installing dm-serializer (1.2.2)
+Installing dm-timestamps (1.2.0)
+Installing dm-transactions (1.2.0)
+Installing stringex (1.5.1)
+Installing uuidtools (2.1.4)
+Installing dm-types (1.2.2)
+Installing dm-validations (1.2.0)
+Installing data_mapper (1.2.0)
+Installing data_objects (0.10.12)
+Installing dm-do-adapter (1.2.0)
+Installing do_mysql (0.10.12)
+Installing dm-mysql-adapter (1.2.0)
+Installing do_sqlite3 (0.10.12)
+Installing dm-sqlite-adapter (1.2.0)
+Installing log4r (1.1.10)
+Installing mysql (2.9.1)
+Using rack (1.5.2)
+Installing rack-protection (1.5.0)
+Using tilt (1.4.1)
+Installing sinatra (1.4.2)
+Installing sqlite3 (1.3.7)
+Using bundler (1.3.5)
+Your bundle is complete!
+Use `bundle show [gemname]` to see where a bundled gem is installed.
+```
 
 So... How do we see if it's working?
 Well first we create a virtual host definition.
@@ -276,81 +282,99 @@ For Apache2, this is done by creating a file in `/etc/apache2/sites-available` n
 In this case we're creating a site named `sdshmc.mydomain.com`, so the file will be `/etc/apache2/sites-available/sdshmc.mydomain.com`.
 I have included an example Apache2 VHost config here:
 
-    <VirtualHost *:80>
-      ServerAdmin     your.name@some.email.service.com
+```ApacheConf
+<VirtualHost *:80>
+  ServerAdmin     your.name@some.email.service.com
 
-      ServerName      sdshmc.mydomain.com
-      # If you want an alias for your site using CNAME for example, do womthing like this:
-      #ServerAlias     sdshmc.your-app-name.com
+  ServerName      sdshmc.mydomain.com
+  # If you want an alias for your site using CNAME for example, do womthing like this:
+  #ServerAlias     sdshmc.your-app-name.com
 
-      ServerSignature Off
+  ServerSignature Off
 
-      # Points to your site files
-      # NOTE: You must have a public folder even if it's empty
-      DocumentRoot    /home/some_user/sdshmc/public
+  # Points to your site files
+  # NOTE: You must have a public folder even if it's empty
+  DocumentRoot    /home/some_user/sdshmc/public
 
-      # Only interested in warnings and above
-      LogLevel        warn
+  # Only interested in warnings and above
+  LogLevel        warn
 
-      # For access and error logging
-      # Note that you'll have to ensure this folder is wriatble by www-data
-      ErrorLog        /home/some_user/sdshmc/logs/error.log
-      CustomLog       /home/some_user/sdshmc/logs/access.log combined
+  # For access and error logging
+  # Note that you'll have to ensure this folder is wriatble by www-data
+  ErrorLog        /home/some_user/sdshmc/logs/error.log
+  CustomLog       /home/some_user/sdshmc/logs/access.log combined
 
-      # If you're using cgi-bin programs
-      #ScriptAlias     /cgi-bin/ /usr/lib/cgi-bin/
+  # If you're using cgi-bin programs
+  #ScriptAlias     /cgi-bin/ /usr/lib/cgi-bin/
 
-      # The directory where the site is stored
-      # NOTE the trailing slash!
-      <Directory /home/some_user/sdshmc/public/>
-        Options       Indexes FollowSymLinks MultiViews
-        AllowOverride All
-        # We allow first, then deny
-        Order         Allow,Deny
-        # For security during testing, put your home IP address here
-        #Allow from    200.200.200.200
-        # Otherwise, use this:
-        Allow from     All
-      </Directory>
-    </VirtualHost>
+  # The directory where the site is stored
+  # NOTE the trailing slash!
+  <Directory /home/some_user/sdshmc/public/>
+    Options       Indexes FollowSymLinks MultiViews
+    AllowOverride All
+    # We allow first, then deny
+    Order         Allow,Deny
+    # For security during testing, put your home IP address here
+    #Allow from    200.200.200.200
+    # Otherwise, use this:
+    Allow from     All
+  </Directory>
+</VirtualHost>
+```
 
 Edit your file like this:
 
-    sudo vi /etc/apache2/sites-available/sdshmc.mydomain.com
+```sh
+sudo vi /etc/apache2/sites-available/sdshmc.mydomain.com
+```
 
 SideStep: The `logs` folder will need to be writable by Apache, so do this:
 
-    chown www-data.www-data logs
+```sh
+sudo chown www-data.www-data logs
+```
 
 Enable the site:
 
-    sudo a2ensite sdshmc.mydomain.com
+```sh
+sudo a2ensite sdshmc.mydomain.com
+```
 
 You'll see a message about reloading Apache. So we need to do that:
 
-    sudo /etc/init.d/apache2 reload
+```sh
+sudo /etc/init.d/apache2 reload
+```
 
 You should see something like this:
 
-    sudo /etc/init.d/apache2 reload
-     * Reloading web server config apache2   [ OK ]
+```sh
+sudo /etc/init.d/apache2 reload
+ * Reloading web server config apache2   [ OK ]
+```
 
 Sometimes you make a syntax error like I did doing this. An example might be:
 
-    Syntax error on line 30 of /etc/apache2/sites-enabled/sdshmc.mydomain.com:
-    order takes one argument, 'allow,deny', 'deny,allow', or 'mutual-failure'
-       ...fail!
+```sh
+Syntax error on line 30 of /etc/apache2/sites-enabled/sdshmc.mydomain.com:
+order takes one argument, 'allow,deny', 'deny,allow', or 'mutual-failure'
+   ...fail!
+```
 
 As you can see, I made a mistake with the `Order` directive.
-In my case I had a space between the ',' and the 'Deny'
+In my case I had a space between the 'Allow,' and the 'Deny'
 
 Ok. You should now be able to browse to `http://sdshmc.mydomain.com` and see your first message:
 
-    {"errors":["You need to provide an IPv4 address"]}
+```json
+{"errors":["You need to provide an IPv4 address"]}
+```
 
 Now try `http://sdshmc.mydomain.com/60.240.233.28/this_app/df76f1e54f63eae442ebf3b4d6c46531`:
 
-    {"errors":["Unknown vendor"]}
+```json
+{"errors":["Unknown vendor"]}
+```
 
 What's wrong?
 Well the database tables have not been seeded.
@@ -369,12 +393,14 @@ To see that, go to your mysql command prompt and look at the created tables:
 The tables are created but are empty.
 Now we check the logs to see we now have a `production.log`:
 
-    my_remote_name@my_remote_host:~/sdshmc/logs$ ls -l
-    total 16
-    -rw-r--r-- 1 my_remote_name my_remote_name 5446 2013-06-03 00:09 access.log
-    -rw-r--r-- 1 my_remote_name my_remote_name    0 2013-06-02 23:20 development.log
-    -rw-r--r-- 1 root           root            999 2013-06-02 23:48 error.log
-    -rw-r--r-- 1 my_remote_name my_remote_name  576 2013-06-03 00:07 production.log
+```sh
+my_remote_name@my_remote_host:~/sdshmc/logs$ ls -l
+total 16
+-rw-r--r-- 1 my_remote_name my_remote_name 5446 2013-06-03 00:09 access.log
+-rw-r--r-- 1 my_remote_name my_remote_name    0 2013-06-02 23:20 development.log
+-rw-r--r-- 1 root           root            999 2013-06-02 23:48 error.log
+-rw-r--r-- 1 my_remote_name my_remote_name  576 2013-06-03 00:07 production.log
+```
 
 If you tail it while we use the `http://sdshmc.mydomain.com/idl/SEED_SECRET` url you'll see the tables filling up with data.
 Afterwards you can use the mysql command line to check the results:
@@ -391,7 +417,9 @@ Afterwards you can use the mysql command line to check the results:
 
 Now a call to `http://sdshmc.mydomain.com/60.240.233.28/this_app/df76f1e54f63eae442ebf3b4d6c46531` yields:
 
-    {"iso3":"AUS","country":"Australia"}
+```json
+{"iso3":"AUS","country":"Australia"}
+```
 
 And a call to `http://sdshmc.mydomain.com/60.240.233.28/this_app/df76f1e54f63eae442ebf3b4d6c46531.xml` yields:
 
@@ -423,12 +451,14 @@ end
 Notice that the gem is the mysql gem and not the mysql2 gem.
 The gem reference is also in the database.yml file:
 
-    production:
-      adapter: mysql
-      encoding: utf8
-      username: sdshmc
-      password: sdshmc
-      database: sdshmc
+```yaml
+production:
+  adapter: mysql
+  encoding: utf8
+  username: sdshmc
+  password: sdshmc
+  database: sdshmc
+```
 
 Notice that the adapter is mysql and not mysql2.
 Supposedly the dm-mysql-adapter does not suffer from the utf8 issue.
