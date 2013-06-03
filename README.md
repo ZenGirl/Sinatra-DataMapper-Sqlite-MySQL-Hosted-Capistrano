@@ -1,5 +1,7 @@
 # Sinatra-DataMapper-Sqlite-MySQL-Hosted-Capistrano
 
+## Local development
+
 Example Sinatra app using Sqlite development, MySQL production deployed to a hosted server via capistrano
 
 To run, do:
@@ -68,22 +70,7 @@ I strongly suggest reading the application.rb file as it is chock full of commen
 
 ## Production
 
-Since this example assumes MySQL in production you will have to create the database itself.
-In the `database.yml`, you'll see:
-
-    production:
-      adapter: mysql
-      encoding: utf8
-      username: sdshmc
-      password: sdshmc
-      database: sdshmc
-
-Which will obviously have to be changed to use your dbname, user and pass.
-
-Once that has been done, you'll probably be using either Apache2 or NGinx as a server.
-Under passenger presumably.
-
-## Passenger
+### Passenger
 
 Installing Passenger is simple assuming you have all the required packages installed.
 The Passenger install users guides are here:
@@ -119,7 +106,7 @@ OBVIOUSLY you'll want to change the path to the gems and ruby2!
 You'll have to `a2enmod passenger` to create the links from /etc/apache2/mods-enabled to /etc/apache2/mods-available.
 After that, just restart Apache.
 
-## DNS
+### DNS
 
 You can't make your site run properly (I'm excluding accessing it from an IP address) without a name.
 So access your DNS zone settings (netregistry or whatever) and ensure you have the A or CNAME records configured for that name.
@@ -139,7 +126,7 @@ Once the name has propagated, you can check it like this:
 
 Cool.
 
-## Database
+### Database
 
 The site uses MySQL in production, so you will have to ensure that the database defined in `config/database.yml` exists and is accessible.
 Here is a mysql command line example:
@@ -163,7 +150,7 @@ Here is a mysql command line example:
 
 Don't worry about creating tables as DataMapper will do that.
 
-## Web Server
+### Web Server
 
 I'm illustrating Apache2 here, but the steps are similar for NGinx.
 (I'll cover NGinx setup in a separate post)
@@ -416,13 +403,13 @@ And a call to `http://sdshmc.mydomain.com/60.240.233.28/this_app/df76f1e54f63eae
 
 The error is because we didn't include an `<xml .../>` header.
 
-## Capistrano
+### Capistrano
 
 Finally. We're close.
 *coming soon*
 
-NOTICE:
--------
+### NOTICE:
+
 The Gemfile has:
 
 ```ruby
