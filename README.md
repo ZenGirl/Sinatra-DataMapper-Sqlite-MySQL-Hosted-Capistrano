@@ -380,7 +380,7 @@ To see that, go to your mysql command prompt and look at the created tables:
     3 rows in set (0.00 sec)
 
 The tables are created but are empty.
-Now we check the logs:
+Now we check the logs to see we now have a `production.log`:
 
     my_remote_name@my_remote_host:~/sdshmc/logs$ ls -l
     total 16
@@ -388,9 +388,6 @@ Now we check the logs:
     -rw-r--r-- 1 my_remote_name my_remote_name    0 2013-06-02 23:20 development.log
     -rw-r--r-- 1 root           root            999 2013-06-02 23:48 error.log
     -rw-r--r-- 1 my_remote_name my_remote_name  576 2013-06-03 00:07 production.log
-
-Let's view the production log:
-
 
 If you tail it while we use the `http://sdshmc.mydomain.com/idl/SEED_SECRET` url you'll see the tables filling up with data.
 Afterwards you can use the mysql command line to check the results:
@@ -418,6 +415,11 @@ And a call to `http://sdshmc.mydomain.com/60.240.233.28/this_app/df76f1e54f63eae
     </response>
 
 The error is because we didn't include an `<xml .../>` header.
+
+## Capistrano
+
+Finally. We're close.
+*coming soon*
 
 NOTICE:
 -------
